@@ -45,6 +45,7 @@ class AuctionList extends Component {
             <Link to={`/auctions/${auction.id}`} className="header">
               {auction.title}
             </Link>
+            <div>Ends on: {auction.end_datetime}</div>
           </div>
         </div>
       );

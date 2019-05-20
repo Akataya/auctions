@@ -9,6 +9,7 @@ import {
   EDIT_AUCTION,
   DELETE_AUCTION,
   FETCH_BIDS,
+  FETCH_BID,
   CREATE_BID,
   EDIT_BID,
   DELETE_BID
@@ -36,7 +37,7 @@ export const fetchAuctions = () => async dispatch => {
 };
 
 export const fetchAuction = id => async dispatch => {
-  console.log("polling auction");
+  console.log("polling...");
   const response = await auctions.get(`/auctions/${id}`);
 
   dispatch({ type: FETCH_AUCTION, payload: response.data });
@@ -81,4 +82,40 @@ export const fetchBids = id => async dispatch => {
     type: FETCH_BIDS,
     payload: normalizedData.entities.bids
   });
+};
+
+export const fetchBid = id => async dispatch => {
+  console.log("polling bids...");
+  const response = await auctions.get(`/bids/${id}`);
+
+  dispatch({ type: FETCH_BID, payload: response.data });
+};
+
+export const createBid = (auction, formValues) => async (
+  dispatch,
+  getState
+) => {
+  const { user_id } = getState().auth.user;
+  const response = await auctions.post("/bids/", {
+    ...formValues,
+    auction
+  });
+
+  dispatch({ type: CREATE_BID, payload: response.data });
+  history.push(`/auctions/${auction}`);
+};
+
+export const editBid = (id, formValues) => async (dispatch, getState) => {
+  const response = await auctions.patch(`/bids/${id}/`, formValues);
+  const bid = getState().bids[id];
+
+  dispatch({ type: EDIT_BID, payload: response.data });
+  history.push(`/auctions/${bid.auction}`);
+};
+
+export const deleteBid = id => async (dispatch, getState) => {
+  await auctions.delete(`/bids/${id}/`);
+
+  dispatch({ type: DELETE_BID, payload: id });
+  history.push("/");
 };

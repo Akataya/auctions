@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchBids } from "../../actions";
 import isEmpty from "lodash/isEmpty";
+import BidEdit from "./BidEdit";
 
 class BidList extends Component {
   componentDidMount() {
@@ -19,7 +20,7 @@ class BidList extends Component {
 
   getAuctionBids() {
     const bids = this.props.bids.filter(
-      bid => bid.auction == this.props.currentAuctionId
+      bid => bid.auction === this.props.currentAuctionId
     );
     return bids;
   }
@@ -55,10 +56,11 @@ class BidList extends Component {
       if (bid.user === this.props.currentUserId) {
         return (
           <div className="right floated content">
-            <Link to={`/bids/edit/${bid.id}`} className="ui button primary">
+            <Link to={`/bids/${bid.id}/edit`} className="ui button primary">
               Edit
             </Link>
-            <Link to={`/bids/delete/${bid.id}`} className="ui button negative">
+
+            <Link to={`/bids/${bid.id}/delete`} className="ui button negative">
               Delete
             </Link>
           </div>

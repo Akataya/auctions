@@ -31,8 +31,14 @@ class AuctionDetail extends Component {
         <p>End: {end_datetime}</p>
         <p>Description: {description}</p>
         <h2>Bids:</h2>
+
+        <Link
+          to={`${this.props.auction.id}/bid`}
+          className="ui green basic button"
+        >
+          Create Bid
+        </Link>
         <BidList currentAuctionId={this.props.auction.id} />
-        {/* <Link to={`/auctions/${id}/bids`}>View bids</Link>*/}
       </div>
     );
   }
