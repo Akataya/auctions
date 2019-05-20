@@ -3,11 +3,13 @@ from ..models import Auction, Bid, Comment
 from users.api.serializers import UserSerializer
 from rest_framework.reverse import reverse
 
+
 # Default auction serializer (POST, PUT, PATCH, DELETE methods)
 class AuctionSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     class Meta:
         model = Auction
@@ -39,15 +41,6 @@ class AuctionLISTSerializer(serializers.ModelSerializer):
         return obj.comments.count()
 
 
-# Bid serializer for GET methods (LIST and RETRIEVE actions)
-class BidGETSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Bid
-        fields = ('id', 'user', 'auction', 'amount_offered', 'created')
-
-
 # Auction serializer for GET method | RETRIEVE action
 class AuctionRETRIEVESerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -58,16 +51,27 @@ class AuctionRETRIEVESerializer(serializers.ModelSerializer):
                   'created', 'bids', 'comments')
 
 
+# Bid serializer for GET methods (LIST and RETRIEVE actions)
+class BidGETSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Bid
+        fields = ('id', 'user', 'auction', 'amount_offered', 'created')
+
+
 # Default bid serializer (POST, PUT, PATCH, DELETE methods)
 class BidSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     class Meta:
         model = Bid
         fields = ('id', 'user', 'auction', 'amount_offered', 'created')
         read_only_fields = ('id', 'user', 'created')
+        http_method_names = ['post', 'patch', 'put', 'head']
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
